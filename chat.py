@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+<<<<<<< HEAD
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 chat_history = []
@@ -16,20 +17,50 @@ def chat_with_bot(message, history):
         if not history:
             internal_history = []
         else:
+=======
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+chat_history = []
+
+def chat_with_bot(message, history):
+  
+    try:
+       
+        if not history:
+            internal_history = []
+        else:
+            
+>>>>>>> 84a45c7 (Save changes before pull)
             internal_history = []
             for i in range(0, len(history), 2):
                 user_msg = history[i]["content"]
                 bot_msg = history[i+1]["content"]
                 internal_history.append((user_msg, bot_msg))
         
+<<<<<<< HEAD
         messages = [{"role": "system", "content": "Sen yardımcı bir asistansın. Türkçe sorulara Türkçe, İngilizce sorulara İngilizce yanıt ver."}]
         
+=======
+        
+        messages = [{"role": "system", "content": "Sen yardımcı bir asistansın. Türkçe sorulara Türkçe, İngilizce sorulara İngilizce yanıt ver."}]
+        
+        
+>>>>>>> 84a45c7 (Save changes before pull)
         for human_msg, bot_msg in internal_history:
             messages.append({"role": "user", "content": human_msg})
             messages.append({"role": "assistant", "content": bot_msg})
         
+<<<<<<< HEAD
         messages.append({"role": "user", "content": message})
         
+=======
+        
+        messages.append({"role": "user", "content": message})
+        
+        
+>>>>>>> 84a45c7 (Save changes before pull)
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
@@ -42,6 +73,10 @@ def chat_with_bot(message, history):
         
         internal_history.append((message, bot_response))
         
+<<<<<<< HEAD
+=======
+       
+>>>>>>> 84a45c7 (Save changes before pull)
         formatted_history = []
         for human_msg, bot_msg in internal_history:
             formatted_history.append({"role": "user", "content": human_msg})
@@ -61,9 +96,16 @@ def chat_with_bot(message, history):
         return "", formatted_history
 
 def clear_chat():
+<<<<<<< HEAD
  
     return [], []
 
+=======
+    
+    return [], []
+
+
+>>>>>>> 84a45c7 (Save changes before pull)
 with gr.Blocks(title="Mini Chatbot", theme=gr.themes.Soft()) as demo:
     gr.Markdown("# 🤖 Mini Chatbot")
     gr.HTML(
@@ -132,14 +174,27 @@ with gr.Blocks(title="Mini Chatbot", theme=gr.themes.Soft()) as demo:
     
     with gr.Row():
         clear_btn = gr.Button("Sohbeti Temizle", variant="secondary")
+<<<<<<< HEAD
 
+=======
+    
+  
+>>>>>>> 84a45c7 (Save changes before pull)
     msg.submit(chat_with_bot, inputs=[msg, chatbot], outputs=[msg, chatbot])
     send_btn.click(chat_with_bot, inputs=[msg, chatbot], outputs=[msg, chatbot])
     clear_btn.click(clear_chat, outputs=[chatbot, chatbot])
     
+<<<<<<< HEAD
     msg.submit(lambda: "", outputs=msg)
 
 if __name__ == "__main__":
+=======
+    
+    msg.submit(lambda: "", outputs=msg)
+
+if __name__ == "__main__":
+    
+>>>>>>> 84a45c7 (Save changes before pull)
     if not os.getenv("OPENAI_API_KEY"):
         print("⚠️  UYARI: OPENAI_API_KEY ortam değişkeni bulunamadı!")
         print("Lütfen .env dosyasını oluşturun ve OpenAI API anahtarınızı ekleyin.")
