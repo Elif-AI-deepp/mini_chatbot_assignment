@@ -3,43 +3,34 @@ import gradio as gr
 from openai import OpenAI
 from dotenv import load_dotenv
 
-# Ortam değişkenlerini yükle
+
 load_dotenv()
 
-# OpenAI istemcisini başlat
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Mesaj geçmişini saklamak için global değişken
 chat_history = []
 
 def chat_with_bot(message, history):
-    """
-    Kullanıcı mesajını alır ve OpenAI API'si ile yanıt üretir
-    """
+
     try:
         # Eğer history boşsa, boş liste olarak başlat
         if not history:
             internal_history = []
         else:
-            # Gradio'dan gelen dict listesi formatını tuple listesine çevir
             internal_history = []
             for i in range(0, len(history), 2):
                 user_msg = history[i]["content"]
                 bot_msg = history[i+1]["content"]
                 internal_history.append((user_msg, bot_msg))
         
-        # Mesaj geçmişini OpenAI formatına dönüştür
         messages = [{"role": "system", "content": "Sen yardımcı bir asistansın. Türkçe sorulara Türkçe, İngilizce sorulara İngilizce yanıt ver."}]
         
-        # Geçmiş konuşmaları ekle
         for human_msg, bot_msg in internal_history:
             messages.append({"role": "user", "content": human_msg})
             messages.append({"role": "assistant", "content": bot_msg})
         
-        # Mevcut kullanıcı mesajını ekle
         messages.append({"role": "user", "content": message})
         
-        # OpenAI API çağrısı
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
@@ -49,10 +40,9 @@ def chat_with_bot(message, history):
         
         bot_response = response.choices[0].message.content
         
-        # Geçmişi güncelle
+        
         internal_history.append((message, bot_response))
         
-        # Gradio Chatbot bileşeni için uygun formata dönüştür
         formatted_history = []
         for human_msg, bot_msg in internal_history:
             formatted_history.append({"role": "user", "content": human_msg})
@@ -72,12 +62,9 @@ def chat_with_bot(message, history):
         return "", formatted_history
 
 def clear_chat():
-    """
-    Sohbet geçmişini temizle
-    """
+ 
     return [], []
 
-# Gradio arayüzünü oluştur
 with gr.Blocks(title="Mini Chatbot", theme=gr.themes.Soft()) as demo:
     gr.Markdown("# 🤖 Mini Chatbot")
     gr.HTML(
@@ -146,17 +133,14 @@ with gr.Blocks(title="Mini Chatbot", theme=gr.themes.Soft()) as demo:
     
     with gr.Row():
         clear_btn = gr.Button("Sohbeti Temizle", variant="secondary")
-    
-    # Event handlers
+
     msg.submit(chat_with_bot, inputs=[msg, chatbot], outputs=[msg, chatbot])
     send_btn.click(chat_with_bot, inputs=[msg, chatbot], outputs=[msg, chatbot])
     clear_btn.click(clear_chat, outputs=[chatbot, chatbot])
     
-    # Enter tuşu ile mesaj gönderme
     msg.submit(lambda: "", outputs=msg)
 
 if __name__ == "__main__":
-    # API anahtarının varlığını kontrol et
     if not os.getenv("OPENAI_API_KEY"):
         print("⚠️  UYARI: OPENAI_API_KEY ortam değişkeni bulunamadı!")
         print("Lütfen .env dosyasını oluşturun ve OpenAI API anahtarınızı ekleyin.")
