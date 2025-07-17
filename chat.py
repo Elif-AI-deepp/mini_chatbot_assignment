@@ -13,7 +13,6 @@ chat_history = []
 def chat_with_bot(message, history):
 
     try:
-        # Eğer history boşsa, boş liste olarak başlat
         if not history:
             internal_history = []
         else:
